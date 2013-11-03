@@ -19,12 +19,25 @@
         this.QuantityThreshold = quantityThreshold || null; // Action will not be executed unless the count of items of a type exceed this number, minimum number required to execute action
     }
 
-    function Item() {
+    function Item(itemElement) {
         this.Id = null;
         this.Stats = null;        
         this.ActionElement = null;
         this.ExecuteAction = true;
-        this.ActionExecuteTime = null;        
+        this.ActionExecuteTime = null;    
+        this.DiamondCost = 0;    
+        this.Place = null;
+
+        this.Init(itemElement);
+    }
+
+    Item.prototype.Init = function(itemElement){
+    	this.Place = 'stash'
+		this.Id = itemElement.getAttribute('stashid');
+		if(!this.Id){
+			this.Place = 'finds';
+			this.Id = itemElement.getAttribute('findid');
+		}
     }
 	
 	function addSuffixPadding(value, length) {	  		
@@ -68,9 +81,9 @@
 		new ItemType('itemtype12','Magic Find Potion','drink', false, 0),
 
 		// Scrolls
-		new ItemType('itemtype5','Blue scroll','craft', false, 0),
-		new ItemType('itemtype6','Yellow scroll','craft', false, 0),
-		new ItemType('itemtype7','Legendary scroll','craft', false, 0),
+		//new ItemType('itemtype5','Blue scroll','craft', false, 0),
+		//new ItemType('itemtype6','Yellow scroll','craft', false, 0),
+		//new ItemType('itemtype7','Legendary scroll','craft', false, 0),
 		new ItemType('itemtype13','Amnesia Scroll','sell', false, 5), // don't craft this one unless you want your stats reset automatically
 		
 
@@ -89,11 +102,11 @@
 		return targetArray;
 	}
 	
-	function generateOutput(itemType, item, areaName, message) {
+	function generateOutput(itemType, item, message) {
 		var output = [
 			addSuffixPadding(itemType.Action, 7),
 			addSuffixPadding(itemType.Name, 25),
-			'from ' + addSuffixPadding(areaName, 7),
+			'from ' + addSuffixPadding(item.Place, 7),
 			'on ' + addSuffixPadding(item.ActionExecuteTime.today() + " @ " + item.ActionExecuteTime.timeNow(), 26)
 		];
 
@@ -114,12 +127,12 @@
 		itemTypes.every(function(itemType) {	
 			var itemTypeList = [], 
 				stashAreaList = document.getElementById('stash'), 
-				findsAreaList = document.getElementById('finds'),
-				areaName = 'stash',
+				findsAreaList = document.getElementById('finds'),				
 				itemProcessed = false,				
 				output,
 				message = '',
-				countItemsOfType = 0;				
+				countItemsOfType = 0,
+				diamondBalance = 0;				
 	
 			itemTypeList = appendNodeListToArray(itemTypeList, stashAreaList.getElementsByClassName(itemType.ElementClass));
 			itemTypeList = appendNodeListToArray(itemTypeList, findsAreaList.getElementsByClassName(itemType.ElementClass));
@@ -127,18 +140,13 @@
 			var gemCoutner = 0;
 
 			itemTypeList.every(function(itemElement){
-				var item = new Item();					
-				
+				var item = new Item(itemElement);									
 				countItemsOfType++;
 
 				if(itemType.CompareStats){
-					item.Id = itemElement.getAttribute('stashid');
-					if(!item.Id){
-						areaName = 'finds';
-						item.Id = itemElement.getAttribute('findid');
-					}
-
-					item.Stats = game.getStatsIfEquipped(areaName, item.Id);
+					
+					
+					item.Stats = game.getStatsIfEquipped(item.Place, item.Id);
 					//if(item.Stats.goldPerSec > 0 || item.Stats.diamondsPerSec > 0 || item.Stats.magicFind > 0 || item.Stats.maxXpPerSec > 0) {
 					if(item.Stats.goldPerSec > 0) {
 						// at least one of the stats is better then the currnetly equipped itemType, don't sell
@@ -154,10 +162,22 @@
 					message += ' QuantityThreshold of ' + itemType.QuantityThreshold  + ' exceeded';					
 				}
 
+				// make sure we have enough diamonds to craft a scroll
+				if(itemType.Action === 'craft'){
+					diamondBalance =  parseInt(document.getElementById('diamond').innerHTML.replace(/ /g,''),10);					
+					item.DiamondCost = game.data[item.Place][item.Id].diamondsCost;					
+					// not enough diamonds, skip to next item in itemTypeList
+					if(item.DiamondCost > diamondBalance){
+						item.ExecuteAction  = false;
+					}
+				}
+				
 				// skips to next item in itemTypeList
 				if(!item.ExecuteAction){
 					return true;
 				}
+
+
 
 				item.ActionElement = itemElement.getElementsByClassName(itemType.Action)[0];
 
@@ -167,7 +187,7 @@
 					item.ActionExecuteTime = new Date();				
 					itemProcessed = true;
 					
-					output = generateOutput(itemType, item, areaName, message);
+					output = generateOutput(itemType, item, message);
 					console.log(output);
 
 					// exists the itemTypeList loop

@@ -22,6 +22,11 @@ Feature requests are welcome and can be submitted [here](https://github.com/jare
 ## Changelog
 
 <dl>
+	<dt>v1.1.1 released 2013-11-03</dt>
+	<dd>
+		Scrolls will only be crafted if there are enough diamonds in the current balance. This resovled [issue #4](https://github.com/jarekb84/GoldenMinerProspector/issues/4).
+		Commented out scroll types from the itemTypes array since my diamond balance has been really low. Since instant diamond potions can now be stocked up a bit, plan is to craft scrolls manually after drinking all the instant diamond potions to build up a diamond balance.
+	</dd>
 	<dt>v1.1.0 released 2013-11-03</dt>
 	<dd>
 		Added minimum quantity threshold before an action is executed.
