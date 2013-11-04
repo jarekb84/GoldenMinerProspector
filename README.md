@@ -146,8 +146,8 @@ In this case, the Prospector will drink a Diamond Potion everytime it is found i
 
 
 ## Bugs
-Right now this works for me in Chrome. Seems to be broken in FireFox and I haven't tested IE. If there is interest in those browsers, I can take a look at fixing the cross browser issues.
-Feel free to report bugs [here](https://github.com/jarekb84/GoldenMinerProspector/issues).
+Tested and working in Chrome and Firefox, not in IE. I mostly use Chrome, so if any bugs popup in other browsers, submit a bug report [here](https://github.com/jarekb84/GoldenMinerProspector/issues).
 
 ## Todo
+* Disable Gamble button when gold or diamond rates are affected by a potion
 * bug fixes
