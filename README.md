@@ -33,6 +33,11 @@ Feature requests are welcome and can be submitted [here](https://github.com/jare
 
 ## Changelog
 
+**v1.2.1 released 2013-11-05**
+
+* Added new item types (Giant type gems).
+* Changed quantity threshold defaults for Instant Gold/Diamond potions to 50.
+* Reduced interval from 1 second to 500ms. Makes selling off items from gabmling a lot quicker.
 
 **v1.2.0 released 2013-11-03**
 

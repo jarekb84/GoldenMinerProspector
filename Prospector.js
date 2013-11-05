@@ -66,34 +66,39 @@
 		new ItemType('itemtype100','Tiny Ruby','sell', [], 0),
 		new ItemType('itemtype101','Small Ruby','sell', [], 0),
 		new ItemType('itemtype102','Big Ruby','sell', [], 0),
+		new ItemType('itemtype103','Giant Ruby','sell', [], 0),
 
 		new ItemType('itemtype110','Tiny Diamond','sell', [], 0),
 		new ItemType('itemtype111','Small Diamond','sell', [], 0),
 		new ItemType('itemtype112','Big Diamond','sell', [], 0),
+		new ItemType('itemtype113','Giant Diamond','sell', [], 0),
 
 		new ItemType('itemtype120','Tiny Amethyst','sell', [], 0),
 		new ItemType('itemtype121','Small Amethyst','sell', [], 0),
-		new ItemType('itemtype122','Big Amethyst','sell', [], 15),
+		new ItemType('itemtype122','Big Amethyst','sell', [], 0),
+		new ItemType('itemtype123','Giant Amethyst','sell', [], 15),
 
 		new ItemType('itemtype130','Tiny Sapphire','sell', [], 0),
 		new ItemType('itemtype131','Small Sapphire','sell', [], 0),
 		new ItemType('itemtype132','Big Sapphire','sell', [], 0),
+		new ItemType('itemtype133','Giant Sapphire','sell', [], 0),
 
 		new ItemType('itemtype140','Tiny Starstone','sell', [], 0),
 		new ItemType('itemtype141','Small Starstone','sell', [], 0),
 		new ItemType('itemtype142','Big Starstone','sell', [], 0),
+		new ItemType('itemtype143','Giant Starstone','sell', [], 0),
 
 		// Potions
-		new ItemType('itemtype8','Instant Gold Potion','drink', [], 20),
-		new ItemType('itemtype9','Instant Diamond Potion','drink', [], 20),
+		new ItemType('itemtype8','Instant Gold Potion','drink', [], 50),
+		new ItemType('itemtype9','Instant Diamond Potion','drink', [], 50),
 		new ItemType('itemtype10','Gold Potion','drink', [], 0),
 		new ItemType('itemtype11','Diamond Potion','drink', [], 0),
 		new ItemType('itemtype12','Magic Find Potion','drink', [], 0),
 
 		// Scrolls
-		//new ItemType('itemtype5','Blue scroll','craft', [], 0),
-		//new ItemType('itemtype6','Yellow scroll','craft', [], 0),
-		//new ItemType('itemtype7','Legendary scroll','craft', [], 0),
+		new ItemType('itemtype5','Blue scroll','craft', [], 0),
+		new ItemType('itemtype6','Yellow scroll','sell', [], 0),
+		//new ItemType('itemtype7','Legendary scroll','sell', [], 15), // these chew up too much of my diamond supply
 		new ItemType('itemtype13','Amnesia Scroll','sell', [], 5), // don't craft this one unless you want your stats reset automatically
 		
 
@@ -226,5 +231,5 @@
 		});
 	}
 		
-	var automateInterval = setInterval(automate, 1000);	
+	var automateInterval = setInterval(automate, 500);	
 }());
