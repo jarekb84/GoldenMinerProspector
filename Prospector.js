@@ -1,15 +1,15 @@
-(function(){ 
+(function(){
 	"use strict";
 	// Golden Miner Prospector version 1.2.0
 
 	//For todays date;
-	Date.prototype.today = function(){ 
-	    return this.getFullYear() + "/" + (((this.getMonth()+1) < 10)?"0":"") + (this.getMonth()+1)  +"/"+ ((this.getDate() < 10)?"0":"") + this.getDate()
+	Date.prototype.today = function(){
+		return this.getFullYear() + "/" + (((this.getMonth()+1) < 10)?"0":"") + (this.getMonth()+1)  +"/"+ ((this.getDate() < 10)?"0":"") + this.getDate();
 	};
 	
 	//For the time now
 	Date.prototype.timeNow = function(){
-	     return ((this.getHours() < 10)?"0":"") + this.getHours() +":"+ ((this.getMinutes() < 10)?"0":"") + this.getMinutes() +":"+ ((this.getSeconds() < 10)?"0":"") + this.getSeconds();
+		return ((this.getHours() < 10)?"0":"") + this.getHours() +":"+ ((this.getMinutes() < 10)?"0":"") + this.getMinutes() +":"+ ((this.getSeconds() < 10)?"0":"") + this.getSeconds();
 	};
 
 	function ItemCompare(options){
@@ -42,26 +42,26 @@
     }
 
     Item.prototype.Init = function(itemElement){
-    	this.Place = 'stash'
+		this.Place = 'stash';
 		this.Id = itemElement.getAttribute('stashid');
 		if(!this.Id){
 			this.Place = 'finds';
 			this.Id = itemElement.getAttribute('findid');
 		}
-    }
+    };
 	
 	function addSuffixPadding(value, length) {
 		value = value.toString();
 		var diff = length - value.length;
 
 		if(diff > 0) {
-			return (value + Array(diff).join(' '));
+			return (value + new Array(diff).join(' '));
 		}
 
 		return value;
 	}
 
-	var itemTypes = [	
+	var itemTypes = [
 		// Gems
 		new ItemType('itemtype100','Tiny Ruby','sell', [], 0),
 		new ItemType('itemtype101','Small Ruby','sell', [], 0),
@@ -97,22 +97,22 @@
 
 		// Scrolls
 		new ItemType('itemtype5','Blue scroll','craft', [], 0),
-		new ItemType('itemtype6','Yellow scroll','sell', [], 0),
-		//new ItemType('itemtype7','Legendary scroll','sell', [], 15), // these chew up too much of my diamond supply
+		new ItemType('itemtype6','Yellow scroll','craft', [], 0),
+		new ItemType('itemtype7','Legendary scroll','craft', [], 0), // these chew up too much of my diamond supply
 		new ItemType('itemtype13','Amnesia Scroll','sell', [], 5), // don't craft this one unless you want your stats reset automatically
 		
 
 		// Items
-		new ItemType('itemtype0','pickaxe','sell', [true, true, false, false, false, 1], 0),
-		new ItemType('itemtype1','armor','sell', [true, true, false, false, false, 1], 0),
-		new ItemType('itemtype2','helm','sell', [true, true, false, false, false, 1], 0),
-		new ItemType('itemtype3','ring','sell', [true, true, false, false, false, 1], 0),
-		new ItemType('itemtype4','amulet','sell', [true, true, false, false, false, 1], 0)
-	]
+		new ItemType('itemtype0','pickaxe','sell', [true, false, false, true, true, 1], 0),
+		new ItemType('itemtype1','armor','sell', [true, false, false, true, true, 1], 0),
+		new ItemType('itemtype2','helm','sell', [true, false, false, true, true, 1], 0),
+		new ItemType('itemtype3','ring','sell', [true, false, false, true, true, 1], 0),
+		new ItemType('itemtype4','amulet','sell', [true, false, false, true, true, 1], 0)
+	];
 
 	function appendNodeListToArray(targetArray, nodeList ){
 		for (var i = 0; i < nodeList.length; ++i) {
-			    targetArray.push(nodeList[i]);
+				targetArray.push(nodeList[i]);
 			}
 		return targetArray;
 	}
@@ -139,10 +139,10 @@
 		return output.join('');
 	}
 
-	function automate(){		
-		itemTypes.every(function(itemType) {	
-			var itemTypeList = [], 
-				stashAreaList = document.getElementById('stash'), 
+	function automate(){
+		itemTypes.every(function(itemType) {
+			var itemTypeList = [],
+				stashAreaList = document.getElementById('stash'),
 				findsAreaList = document.getElementById('finds'),
 				itemProcessed = false,
 				item,
@@ -160,25 +160,25 @@
 
 				countItemsOfType++;
 
-				if(itemType.CompareStats.Enabled){	
+				if(itemType.CompareStats.Enabled){
 
 					item.StatChange = game.getStatsIfEquipped(item.Place, item.Id);
 					item.Stats = game.data[item.Place][item.Id];
 
-					if(
-						(itemType.CompareStats.CheckGold && item.StatChange.goldPerSec > 0)
-						|| (itemType.CompareStats.CheckDiamonds && item.StatChange.diamondsPerSec > 0)
-						|| (itemType.CompareStats.CheckMagicFind && item.StatChange.magicFind > 0)
-						|| (itemType.CompareStats.CheckXp && item.StatChange.maxXpPerSec > 0)
-					) 
-					{
-						if(item.Stats.sockets >= itemType.CompareStats.MinSockets ){
-							// at least one of the stats is better then the currnetly equipped itemType, don't sell													
-							item.ExecuteAction  = false;	
-						} else{
+					var socketedMf = item.Stats.sockets * 1.0;
+
+					if( 
+						   (itemType.CompareStats.CheckGold && item.StatChange.goldPerSec > 0)
+						&& (itemType.CompareStats.CheckMagicFind && (item.StatChange.magicFind + socketedMf) >= 0)
+						&& (itemType.CompareStats.CheckDiamonds && item.StatChange.diamondsPerSec > 0) 
+						&& (itemType.CompareStats.CheckXp && item.StatChange.maxXpPerSec > 0)
+					){
+						if(item.ExecuteAction && item.Stats.sockets >= itemType.CompareStats.MinSockets ){
+						// at least one of the stats is better then the currnetly equipped itemType, don't sell													
+							item.ExecuteAction  = false;
+						} else {
 							message += " Not enough sockets. Has " + item.Stats.sockets + " needed " + itemType.CompareStats.MinSockets;
 						}
-
 					}
 				}
 				
@@ -192,7 +192,7 @@
 
 				// make sure we have enough diamonds to craft a scroll
 				if(itemType.Action === 'craft'){
-					item.Stats = game.data[item.Place][item.Id]
+					item.Stats = game.data[item.Place][item.Id];
 					diamondBalance =  parseInt(document.getElementById('diamond').innerHTML.replace(/ /g,''),10);
 
 					// not enough diamonds, skip to next item in itemTypeList
@@ -209,27 +209,27 @@
 				item.ActionElement = itemElement.getElementsByClassName(itemType.Action)[0];
 
 				// make sure element exists or is found
-				if(item.ActionElement){					
-					item.ActionElement.click();				
-					item.ActionExecuteTime = new Date();				
+				if(item.ActionElement) {
+					item.ActionElement.click();
+					item.ActionExecuteTime = new Date();
 					itemProcessed = true;
 					
 					output = generateOutput(itemType, item, message);
 					console.log(output);
 
 					// exists the itemTypeList loop
-					return false;	
-				}				
-			});			
-			
+					return false;
+				}
+			});
+
 			// this ensures that only one item is sold per automation interval
 			if(itemProcessed){
-				return false
-			} 
-			
+				return false;
+			}
+
 			return true;
 		});
 	}
 		
-	var automateInterval = setInterval(automate, 500);	
+	var automateInterval = setInterval(automate, 500);
 }());
