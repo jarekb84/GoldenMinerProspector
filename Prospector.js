@@ -169,9 +169,9 @@
 
 					if( 
 						   (itemType.CompareStats.CheckGold && item.StatChange.goldPerSec > 0)
-						&& (itemType.CompareStats.CheckMagicFind && (item.StatChange.magicFind + socketedMf) >= 0)
-						&& (itemType.CompareStats.CheckDiamonds && item.StatChange.diamondsPerSec > 0) 
-						&& (itemType.CompareStats.CheckXp && item.StatChange.maxXpPerSec > 0)
+						|| (itemType.CompareStats.CheckMagicFind && (item.StatChange.magicFind + socketedMf) >= 0)
+						|| (itemType.CompareStats.CheckDiamonds && item.StatChange.diamondsPerSec > 0) 
+						|| (itemType.CompareStats.CheckXp && item.StatChange.maxXpPerSec > 0)
 					){
 						if(item.ExecuteAction && item.Stats.sockets >= itemType.CompareStats.MinSockets ){
 						// at least one of the stats is better then the currnetly equipped itemType, don't sell													
